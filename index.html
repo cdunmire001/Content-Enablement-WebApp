@@ -589,9 +589,10 @@ sup.ref{font-size:7px;color:var(--teal);vertical-align:super;cursor:default;marg
 }
 .slide-footer .teal{color:var(--teal)}
 
-/* =========================================
-   MOBILE RESPONSIVE OVERRIDE
-   ========================================= */
+/* =========================================================
+   MOBILE FIX: Convert fixed slide layout into stacked layout
+   Desktop remains unchanged
+   ========================================================= */
 
 html, body {
   width: 100%;
@@ -606,64 +607,77 @@ img, svg, canvas {
 
 @media (max-width: 820px) {
 
-  /* Disable transform scaling on deck only (preserve nav-arrows and animations) */
-  .deck {
+  /* 1) Stop any "deck scaling" behavior that causes overlap */
+  .deck, .slides, .presentation, .app {
     transform: none !important;
-    position: relative !important;
     width: 100% !important;
     max-width: 100% !important;
-    height: auto !important;
-    min-height: 100vh !important;
     overflow: visible !important;
   }
 
-  /* Stage and slide layout: full width, no fixed canvas */
   #stage {
-    position: relative !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
 
-  .slide {
-    position: relative !important;
-    height: auto !important;
-    min-height: 100vh !important;
+  /* 2) The key fix: override slide/page canvas to be fluid */
+  .slide, .page, .screen, .panel {
     width: 100% !important;
     max-width: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    position: relative !important;
+    overflow: visible !important;
   }
 
+  /* Only show active (and leaving) slide; hide others */
   .slide:not(.active):not(.leaving) {
     display: none !important;
   }
-
   .slide.active,
   .slide.leaving {
     display: block !important;
   }
 
-  /* Remove fixed desktop canvas widths */
-  .deck .content,
-  #slide-2 .content,
-  .db-body {
+  /* If you have a wrapper setting fixed dimensions */
+  .slide-inner, .page-inner, .content, .container, .wrapper,
+  #slide-2 .content, .db-body {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 auto !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
-    margin: 0 auto !important;
+    height: auto !important;
   }
 
-  /* Convert grids/columns to stacked layout where used */
+  /* 3) Kill absolute-position layout that stacks on top of itself */
+  .slide * {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+
+  /* 4) Collapse multi-column layouts */
+  .two-col, .columns, .row, .grid,
+  #slide-2 .content,
+  .stage-panel {
+    display: block !important;
+  }
+
+  .stage-panel.visible {
+    display: block !important;
+  }
+  #slide-3 .stage-panel:not(.visible) {
+    display: none !important;
+  }
+
+  /* 5) Make card grids stack */
+  .cards, .card-grid, .benefits, .tiles, .kpi-row,
   .inv-grid {
     display: flex !important;
     flex-direction: column !important;
-  }
-
-  /* Ensure cards wrap properly */
-  .kpi-row {
-    display: flex !important;
-    flex-wrap: wrap !important;
     gap: 12px !important;
   }
 
@@ -671,52 +685,96 @@ img, svg, canvas {
     flex: 1 1 100% !important;
     min-width: 0 !important;
   }
-
-  /* Responsive typography */
-  h1, .headline {
-    font-size: clamp(28px, 7vw, 40px) !important;
-    line-height: 1.1 !important;
+  .sp-kpis {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
   }
 
-  h2, .sp-heading {
-    font-size: clamp(22px, 5.5vw, 30px) !important;
-    line-height: 1.15 !important;
-  }
+  /* 6) Reduce overly large headings that collide */
+  h1, .headline { font-size: clamp(28px, 7vw, 40px) !important; line-height: 1.1 !important; }
+  h2, .sp-heading { font-size: clamp(20px, 6vw, 28px) !important; line-height: 1.15 !important; }
+  p, li { font-size: 16px !important; }
 
-  p, li {
-    font-size: 16px !important;
-  }
-
-  /* Override fixed desktop constraints (layout wrappers only) */
-  #slide-1 .left-panel,
-  #slide-1 .cards-panel,
-  #slide-1 .hero-bg,
-  .stage-panels,
-  .stage-panel,
-  #slide-5 .page-body,
-  #slide-5 .bg-geo {
-    position: relative !important;
+  /* --- Step 3: Page 2 — portrait, no horizontal scroll --- */
+  #slide-2, .page-2 {
     width: 100% !important;
-    max-width: 100% !important;
+    overflow: visible !important;
+  }
+  #slide-2 .content,
+  #slide-2 .columns, #slide-2 .row {
+    display: block !important;
+  }
+  #slide-2 .inv-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* --- Step 4: Page 3 — lifecycle stages wrap (no overlap) --- */
+  .stage-nav, .lifecycle, .lifecycle-stages, .stages {
+    position: relative !important;
+    top: auto !important;
     left: auto !important;
     right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-  }
-
-  #slide-1 .hero-bg {
-    height: 120px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    height: auto !important;
     min-height: 0 !important;
+    padding: 12px 16px !important;
+  }
+  .stage-tab, .lifecycle .stage, .stages .stage {
+    flex: 1 1 calc(50% - 10px) !important;
+    min-width: 140px !important;
+  }
+  .stage-tab * {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+  .stage-panels {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    height: auto !important;
   }
 
+  /* --- Step 5: Page 4 — full scroll, no clipping --- */
+  #slide-4, .page-4 {
+    height: auto !important;
+    overflow: visible !important;
+  }
   #slide-4 .db-body {
     height: auto !important;
     min-height: 0 !important;
     overflow: visible !important;
   }
 
-  .deck {
+  /* --- Step 6: Page 5 — one-column flow, no absolute stack --- */
+  #slide-5, .page-5 {
+    height: auto !important;
     overflow: visible !important;
+  }
+  #slide-5 .page-body,
+  #slide-5 .columns, #slide-5 .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  #slide-5 * {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+  #slide-5 .bg-geo {
+    height: 120px !important;
+    min-height: 0 !important;
   }
 }
 
