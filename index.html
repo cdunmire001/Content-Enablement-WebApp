@@ -112,6 +112,22 @@ html,body{width:100%;height:100%;background:#0F1820;font-family:var(--font-body)
   #slide-5 .right-col{padding:0}
   #slide-5 h2{font-size:clamp(18px,4vw,26px)}
   #slide-5 .bg-geo{width:100%;opacity:.4}
+
+  /* Slide 1: make intro and headwind list feel like stacked "cards" */
+  #slide-1 .hero-bg {
+    display: none !important;
+  }
+  #slide-1 .left-panel,
+  #slide-1 .cards-panel {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(0,181,204,.14) !important;
+    border-radius: 8px !important;
+    margin: 12px 0 !important;
+    padding: 18px 18px 16px !important;
+  }
+  #slide-1 .cards-panel {
+    padding-top: 8px !important;
+  }
 }
 
 /* ============================================================
@@ -799,19 +815,28 @@ img, svg, canvas {
     overflow-x: hidden !important;
   }
 
-  /* --- PAGE 3: Tabs sticky and clickable above content --- */
+  /* PAGE 3: tabs scroll normally; no overlay */
   #slide-3 .stage-nav {
-    position: sticky !important;
-    top: 50px !important;
-    z-index: 300 !important;
+    position: relative !important;
+    top: auto !important;
+    z-index: 1 !important;
     padding: 10px 12px !important;
   }
   #slide-3 .stage-panels {
     position: relative !important;
     top: auto !important;
-    padding-top: 10px;
+    bottom: auto !important;
+    padding-top: 10px !important;
     min-height: 400px;
     z-index: 1;
+  }
+  /* PAGE 3: footnote in the flow on mobile */
+  #slide-3 .footnote-strip {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 12px !important;
   }
 
   /* --- PAGE 4: No horizontal scroll --- */
@@ -827,6 +852,23 @@ img, svg, canvas {
   #slide-4 .cy-row {
     grid-template-columns: 70px 1fr 1fr 44px !important;
   }
+
+  /* PAGE 4: stack value cards vertically; full width */
+  #slide-4 .kpi-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  #slide-4 .kpi-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 0 0 auto !important;
+  }
+  #slide-4 {
+    overflow-x: hidden !important;
+  }
+  #slide-4 .kpi-card .kpi-num { font-size: 26px !important; }
+  #slide-4 .kpi-card .kpi-label { font-size: 12px !important; }
 
   /* --- PAGE 5: Aligned columns, no padding mismatch --- */
   #slide-5 .page-body {
@@ -1051,7 +1093,7 @@ img, svg, canvas {
           <span class="section-label">Stage 01</span>
           <h2 class="sp-heading" style="margin-top:4px">Strategy &amp; <em>Planning</em></h2>
         </div>
-        <p class="sp-desc">Most firms treat planning as an afterthought — a reactive process driven by incoming requests. Industry leaders invest in editorial planning, audience strategy, and campaign briefing tooling to drive proactive, commercially aligned content programs.
+        <p class="sp-desc">Most firms treat planning as an afterthought — a reactive process driven by incoming requests. Industry leaders invest in editorial planning, audience strategy, and campaign briefing tooling to drive proactive, commercially aligned content programs.</p>
         <div class="sp-investments-label">Key Investments</div>
         <div class="sp-investments">
           <div class="sp-inv-item"><span class="sp-inv-icon">📅</span>MRM / Editorial Calendar platforms replacing spreadsheets</div>
@@ -1091,7 +1133,7 @@ img, svg, canvas {
           <span class="section-label">Stage 02</span>
           <h2 class="sp-heading" style="margin-top:4px">Intake &amp; <em>Creation</em></h2>
         </div>
-        <p class="sp-desc">Manual content authoring at scale is unsustainable. Leaders are deploying structured templates, componentized content models, and AI-assisted authoring to eliminate redundant effort and dramatically accelerate time to first draft.
+        <p class="sp-desc">Manual content authoring at scale is unsustainable. Leaders are deploying structured templates, componentized content models, and AI-assisted authoring to eliminate redundant effort and dramatically accelerate time to first draft.</p>
         <div class="sp-investments-label">Key Investments</div>
         <div class="sp-investments">
           <div class="sp-inv-item"><span class="sp-inv-icon">📥</span>Intake &amp; request management tooling with workflow routing</div>
@@ -1131,8 +1173,7 @@ img, svg, canvas {
           <span class="section-label">Stage 03</span>
           <h2 class="sp-heading" style="margin-top:4px">Review &amp; <em>Storage</em></h2>
         </div>
-        <p class="sp-desc">Compliance review is the most common bottleneck in the content lifecycle. Firms with integrated workflow tooling, connecting business review, compliance approval, and DAM storage
-          consistently outperform peers on cycle time and accuracy.
+        <p class="sp-desc">Compliance review is the most common bottleneck in the content lifecycle. Firms with integrated workflow tooling, connecting business review, compliance approval, and DAM storage consistently outperform peers on cycle time and accuracy.</p>
         <div class="sp-investments-label">Key Investments</div>
         <div class="sp-investments">
           <div class="sp-inv-item"><span class="sp-inv-icon">✅</span>Integrated compliance workflow with configurable approval chains</div>
@@ -1172,7 +1213,7 @@ img, svg, canvas {
           <span class="section-label">Stage 04</span>
           <h2 class="sp-heading" style="margin-top:4px">Distribution &amp; <em>Promotion</em></h2>
         </div>
-        <p class="sp-desc">Getting approved content to the right audience, through the right channel, at the right time remains a persistent challenge. Leaders are investing in automated distribution infrastructure that eliminates manual publishing effort and enables channel-specific personalization.
+        <p class="sp-desc">Getting approved content to the right audience, through the right channel, at the right time remains a persistent challenge. Leaders are investing in automated distribution infrastructure that eliminates manual publishing effort and enables channel-specific personalization.</p>
         <div class="sp-investments-label">Key Investments</div>
         <div class="sp-investments">
           <div class="sp-inv-item"><span class="sp-inv-icon">📡</span>Automated multi-channel publishing from a single approved source</div>
@@ -1212,7 +1253,7 @@ img, svg, canvas {
           <span class="section-label">Stage 05</span>
           <h2 class="sp-heading" style="margin-top:4px">Measurement &amp; <em>Maintenance</em></h2>
         </div>
-        <p class="sp-desc">Most firms treat measurement as a reporting obligation rather than a strategic enabler. Leaders are embedding engagement analytics, content lineage tracking, and obsoletion management into the operating model — creating a feedback loop that drives continuous improvement.
+        <p class="sp-desc">Most firms treat measurement as a reporting obligation rather than a strategic enabler. Leaders are embedding engagement analytics, content lineage tracking, and obsoletion management into the operating model — creating a feedback loop that drives continuous improvement.</p>
         <div class="sp-investments-label">Key Investments</div>
         <div class="sp-investments">
           <div class="sp-inv-item"><span class="sp-inv-icon">📊</span>Content engagement analytics tied to sales and client outcomes</div>
