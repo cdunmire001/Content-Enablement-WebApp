@@ -27,6 +27,7 @@
   --slide-h: 720px;
   --r: 4px;
   --deck-scale: 1;
+  --stage-padding: 16px;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -39,7 +40,7 @@ html,body{width:100%;height:100%;background:#0F1820;font-family:var(--font-body)
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:16px;
+  padding:var(--stage-padding);
 }
 .deck{
   width:var(--slide-w);
@@ -51,22 +52,35 @@ html,body{width:100%;height:100%;background:#0F1820;font-family:var(--font-body)
 }
 
 @media (max-width: 900px), (max-height: 760px){
+  :root{--stage-padding:12px}
   html,body{overflow:auto}
   #stage{
     position:relative;
     min-height:100vh;
     align-items:flex-start;
     justify-content:flex-start;
-    padding:12px;
+    padding:var(--stage-padding);
   }
 }
 
 /* ============================================================
-   MOBILE: stack layout so charts/sections don't overlap
+   MOBILE: full-width layout — no scaling, deck fills viewport
 ============================================================ */
 @media (max-width: 768px){
-  .slide{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-  .deck{overflow:visible}
+  :root{--stage-padding:0}
+  html,body{overflow-x:hidden}
+  #stage{padding:0;justify-content:flex-start;align-items:stretch;width:100%}
+  .deck{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    height:100vh !important;
+    min-height:100vh;
+    transform:none !important;
+    overflow:visible;
+  }
+  .slide{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;width:100%;left:0;right:0}
+  .nav-bar,.header-strip,.top-bar{padding-left:16px;padding-right:16px}
   #slide-4 .db-body{
     grid-template-columns:1fr;
     grid-template-rows:auto;
@@ -1335,14 +1349,12 @@ function fitDeckToViewport() {
   const designW = 1280;
   const designH = 720;
 
-  const cs = window.getComputedStyle(stage);
-  const padL = parseFloat(cs.paddingLeft)  || 0;
-  const padR = parseFloat(cs.paddingRight) || 0;
-  const padT = parseFloat(cs.paddingTop)   || 0;
-  const padB = parseFloat(cs.paddingBottom)|| 0;
+  /* Use same --stage-padding as CSS so viewport calculation matches media queries */
+  const padPx = getComputedStyle(document.documentElement).getPropertyValue('--stage-padding').trim();
+  const pad = parseFloat(padPx) || 0;
 
-  const vw = Math.max(320, window.innerWidth  - padL - padR);
-  const vh = Math.max(320, window.innerHeight - padT - padB);
+  const vw = Math.max(320, window.innerWidth  - pad * 2);
+  const vh = Math.max(320, window.innerHeight - pad * 2);
 
   const scale = Math.min(vw / designW, vh / designH, 1);
   document.documentElement.style.setProperty('--deck-scale', String(scale));
