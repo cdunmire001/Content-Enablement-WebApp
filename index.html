@@ -601,6 +601,78 @@ img, svg, canvas {
 
   :root { --stage-padding: 0; }
 
+  /* Mobile: make header/nav bars participate in normal flow so they don't overlap content */
+  .nav-bar, .top-bar, .header-strip {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  /* Slide 1: collapse to a single column (paragraph first, then cards) */
+  #slide-1 .left-panel,
+  #slide-1 .cards-panel {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  #slide-1 .content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  #slide-1 .hero-bg { display: none !important; }
+
+  /* Slide 3: ensure lifecycle selector sits above content and never overlaps */
+  #slide-3 .stage-nav {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 0 !important;
+    z-index: 2 !important;
+  }
+  #slide-3 .stage-panels {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    height: auto !important;
+    z-index: 1 !important;
+  }
+
+  /* Slide 4: force full-width stacked layout (no desktop grid columns) */
+  #slide-4 .db-body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+  }
+  #slide-4 .kpi-row,
+  #slide-4 .cycle-chart,
+  #slide-4 .donut-wrap,
+  #slide-4 .cap-table,
+  #slide-4 .peer-row {
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+  #slide-4 .kpi-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  #slide-4 .nav-arrow {
+    top: auto !important;
+    transform: none !important;
+  }
+
   /* 1) Stop any "deck scaling" behavior that causes overlap */
   .deck, .slides, .presentation, .app {
     transform: none !important;
