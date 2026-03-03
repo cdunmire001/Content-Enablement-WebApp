@@ -602,10 +602,10 @@ img, svg, canvas {
 
   :root { --stage-padding: 0; }
 
-  /* Mobile: allow normal page scrolling; stage/deck become fluid */
+  /* Mobile: let the window scroll, not each slide (no blank top) */
   html, body { overflow: auto !important; }
-  #stage { position: relative !important; inset: auto !important; min-height: 100dvh !important; }
-  .deck { height: auto !important; min-height: 100dvh !important; }
+  #stage { position: relative !important; inset: auto !important; min-height: auto !important; }
+  .deck { height: auto !important; min-height: 0 !important; }
 
   /* Mobile: make header/nav bars participate in normal flow so they don't overlap content */
   .nav-bar, .top-bar, .header-strip {
@@ -685,9 +685,9 @@ img, svg, canvas {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    min-height: 100vh !important;
     overflow: visible !important;
   }
+  .deck { min-height: 0 !important; }
 
   #stage {
     padding-left: 16px !important;
@@ -715,25 +715,25 @@ img, svg, canvas {
   #prev-btn { left: 16px !important; }
   #next-btn { right: 16px !important; }
 
-  /* 2) The key fix: override slide/page canvas to be fluid */
+  /* 2) Slides are not scroll containers; window scrolls, content flows */
   .slide, .page, .screen, .panel {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    min-height: 100dvh !important;
+    min-height: 0 !important;
     position: relative !important;
     overflow-x: hidden !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
+    overflow-y: visible !important;
   }
 
-  /* Only show active (and leaving) slide; hide others */
-  .slide:not(.active):not(.leaving) {
-    display: none !important;
-  }
+  /* Only show active (and leaving) slide in the DOM flow */
+  .slide { display: none !important; }
   .slide.active,
-  .slide.leaving {
-    display: block !important;
+  .slide.leaving { display: block !important; }
+
+  /* Prevent fixed nav arrows from covering the bottom of content */
+  .slide.active {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important;
   }
 
   /* If you have a wrapper setting fixed dimensions */
@@ -1701,6 +1701,10 @@ function goTo(n) {
   const next = document.getElementById('slide-' + currentSlide);
   next.classList.add('active');
   updateNav();
+  /* Mobile: always jump to top so slides don't start in blank space */
+  if (window.matchMedia('(max-width: 820px)').matches) {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }
   triggerAnimations(currentSlide);
 }
 
