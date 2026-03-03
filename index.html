@@ -910,7 +910,8 @@ img, svg, canvas {
   }
 
   /* --- PAGE 1: single column stack; cards full width under paragraph (no two-column split) --- */
-  #slide-1 {
+  /* Use #slide-1.active so the high-specificity ID doesn't override .slide { display:none } */
+  #slide-1.active {
     display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
