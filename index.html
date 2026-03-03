@@ -604,25 +604,39 @@ img, svg, canvas {
 
   :root { --stage-padding: 0; }
 
-  /* Mobile: let the window scroll, not each slide (no blank top) */
-  html, body { overflow: auto !important; }
+  /* MOBILE: make slides behave like normal sections (prevents blank space above content) */
   #stage {
+    display: block !important;
+    padding: 0 !important;
+    min-height: 0 !important;
     position: relative !important;
     inset: auto !important;
-    min-height: auto !important;
-    padding-top: 0 !important;
   }
   .deck {
     height: auto !important;
     min-height: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
     padding-top: 0 !important;
     margin-top: 0 !important;
   }
-  /* Remove any top gap so slide content starts at top of viewport */
   .slide {
+    position: relative !important;
+    inset: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
     padding-top: 0 !important;
     margin-top: 0 !important;
   }
+  .slide { display: none !important; }
+  .slide.active { display: block !important; }
+  .slide.leaving { display: none !important; }
+  .slide * { scroll-margin-top: 12px; }
+
+  /* Mobile: let the window scroll, not each slide (no blank top) */
+  html, body { overflow: auto !important; }
   #slide-2 .top-bar,
   #slide-3 .stage-nav,
   #slide-4 .header-strip,
@@ -728,18 +742,19 @@ img, svg, canvas {
     padding-right: 16px !important;
   }
 
-  /* Nav arrows: fixed to viewport on mobile (same position on every slide) */
+  /* Nav arrows: consistent bottom position on mobile */
   .nav-arrow {
     position: fixed !important;
     top: auto !important;
-    bottom: 14px !important;
+    bottom: 18px !important;
     transform: none !important;
     z-index: 9999 !important;
     width: 44px !important;
     height: 44px !important;
+    opacity: 0.9;
   }
-  #prev-btn { left: 14px !important; }
-  #next-btn { right: 14px !important; }
+  .nav-arrow.left, #prev-btn { left: 14px !important; }
+  .nav-arrow.right, #next-btn { right: 14px !important; }
 
   /* 2) Slides are not scroll containers; window scrolls, content flows */
   .slide, .page, .screen, .panel {
@@ -799,8 +814,9 @@ img, svg, canvas {
     display: none !important;
   }
 
-  /* 5) Make card grids stack */
-  .cards, .card-grid, .benefits, .tiles, .kpi-row,
+  /* 5) Make card grids stack; tighten spacing */
+  .card { width: 100% !important; }
+  .cards, .cards-panel, .value-cards, .card-grid, .benefits, .tiles, .kpi-row,
   .inv-grid {
     display: flex !important;
     flex-direction: column !important;
@@ -960,7 +976,8 @@ img, svg, canvas {
     bottom: auto !important;
     left: auto !important;
     right: auto !important;
-    margin-top: 12px !important;
+    margin-top: 14px !important;
+    opacity: 0.75;
   }
 
   /* --- PAGE 4: No horizontal scroll --- */
@@ -1717,21 +1734,11 @@ const TOTAL = 5;
 const DOT_IDS = ['dots','dots2','dots3','dots4','dots5'];
 const CTR_IDS = ['counter','counter2','counter3','counter4','counter5'];
 
-function resetMobileScrollToDeckTop() {
+function scrollActiveSlideToTop() {
   if (!window.matchMedia("(max-width: 820px)").matches) return;
-  const activeSlide = document.querySelector(".slide.active");
-  if (!activeSlide) return;
-  requestAnimationFrame(() => {
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    window.scrollTo(0, 0);
-    activeSlide.scrollIntoView({ block: "start", inline: "nearest", behavior: "auto" });
-    requestAnimationFrame(() => {
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      window.scrollTo(0, 0);
-    });
-  });
+  const active = document.querySelector(".slide.active");
+  if (active) active.scrollIntoView({ block: "start", behavior: "auto" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function goTo(n) {
@@ -1745,7 +1752,7 @@ function goTo(n) {
   next.classList.add('active');
   updateNav();
   triggerAnimations(currentSlide);
-  resetMobileScrollToDeckTop();
+  scrollActiveSlideToTop();
 }
 
 function updateNav() {
