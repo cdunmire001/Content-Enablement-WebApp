@@ -726,10 +726,10 @@ img, svg, canvas {
     overflow-y: visible !important;
   }
 
-  /* Only show active (and leaving) slide in the DOM flow */
+  /* Only show active slide in the DOM flow (hide leaving so scroll-to-top shows new slide) */
   .slide { display: none !important; }
-  .slide.active,
-  .slide.leaving { display: block !important; }
+  .slide.active { display: block !important; }
+  .slide.leaving { display: none !important; }
 
   /* Prevent fixed nav arrows from covering the bottom of content */
   .slide.active {
@@ -1701,9 +1701,11 @@ function goTo(n) {
   const next = document.getElementById('slide-' + currentSlide);
   next.classList.add('active');
   updateNav();
-  /* Mobile: always jump to top so slides don't start in blank space */
+  /* Mobile: jump to top after display update so new slide content is at the top */
   if (window.matchMedia('(max-width: 820px)').matches) {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    });
   }
   triggerAnimations(currentSlide);
 }
